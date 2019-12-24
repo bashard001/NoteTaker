@@ -67,14 +67,15 @@ var handleNoteDelete = function(event) {
   // prevents the click listener for the list from being called when the button inside of it is clicked
   event.stopPropagation();
 
-  var id = $(this).attr('data')
-  console.log(id)
+  var note = $(this)
+    .parent(".list-group-item")
+    .data();
 
-  if (activeNote.id === id) {
+  if (activeNote.id === note.id) {
     activeNote = {};
   }
 
-  deleteNote(id).then(function() {
+  deleteNote(note.id).then(function() {
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -114,10 +115,10 @@ var renderNoteList = function(notes) {
     var $li = $("<li class='list-group-item'>").data(note);
     var $span = $("<span>").text(note.title);
     var $delBtn = $(
-      `<i class='fas fa-trash-alt float-right text-danger delete-note' data=${i}>`
+      "<i class='fas fa-trash-alt float-right text-danger delete-note'>"
     );
 
-    $li.append(`<span>${i+1}</span> - `,$span, $delBtn);
+    $li.append($span, $delBtn);
     noteListItems.push($li);
   }
 
@@ -126,9 +127,7 @@ var renderNoteList = function(notes) {
 
 // Gets notes from the db and renders them to the sidebar
 var getAndRenderNotes = function() {
-  console.log('getting updated notes...')
   return getNotes().then(function(data) {
-    console.log(data)
     renderNoteList(data);
   });
 };
